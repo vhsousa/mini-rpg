@@ -1,17 +1,9 @@
 Random rand = new Random();
 Scanner sc = new Scanner(System.in);
 
-String heroName = "Arin";
-int heroHp = 100;
-int heroMaxHp = 100;
-int heroAttack = 10;
-int heroDefend = 2;
-int heroPP = 5;
-
-String monsterName = "Goblin";
-int monsterHp = 80;
-int monsterDamage = 12;
-
+Potion potion = new Potion("Health potion", 10);
+Hero hero = new Hero("Arin", 100, 10, 4, 5, potion);
+Monster monster = new Monster("Goblin", 80, Difficulty.HARD);
 boolean flee = false;
 
 void menu() {
@@ -23,8 +15,8 @@ void menu() {
 void heroAttack() {
     // Hero's turn
     IO.println("Hero is attacking...");
-    int attack = rand.nextInt(5) + heroAttack;
-    monsterHp -= attack;
+    int attack = rand.nextInt(5) + hero.getAttack();
+    monster.sufferDamage(attack);
     IO.println("Hero dealt a " + attack + " attack");
 }
 
@@ -32,14 +24,13 @@ void monsterAttack() {
     // Monster's turn
     IO.println("Monster is attacking...");
     boolean canDefend = rand.nextBoolean();
-    int attack = rand.nextInt(monsterDamage);
+    int attack = rand.nextInt(monster.getAttack());
     if (canDefend) {
-        if (heroPP > 0) {
-
+        if (hero.getPp() > 0) {
             // We can defend a partial attack
-            heroPP--;
+            hero.decreasePp();
             IO.println("Hero is defending...");
-            attack -= heroDefend;
+            attack -= hero.getDefend();
 
             if (attack == 0) {
                 IO.println("Hero deflected the attack!");
@@ -50,7 +41,7 @@ void monsterAttack() {
     }
 
     if (attack > 0) {
-        heroHp -= attack;
+        hero.sufferDamage(attack);
         IO.println("Hero suffered a " + attack + " attack");
     }
 }
@@ -80,13 +71,19 @@ void flee() {
 
 void heal() {
     // Hero health +++
-    IO.println("Hero is recovering health...");
-    heroHp = Math.min(heroHp + 5, heroMaxHp);
-    attack(false);
+    if (hero.hasPotion()) {
+        IO.println("Hero is recovering health...");
+        int previousHealth = hero.getHp();
+        hero.recoverHealth();
+        System.out.printf("Hero recovered %d\n", hero.getHp() - previousHealth);
+        attack(false);
+    } else {
+        IO.println("No potions left!");
+    }
 }
 
 void main() {
-    while (heroHp > 0 && monsterHp > 0 && !flee) {
+    while (hero.isAlive() && monster.isAlive() && !flee) {
         menu();
         String command = sc.nextLine();
         switch (command) {
@@ -105,13 +102,13 @@ void main() {
         }
 
         if (!flee) {
-            System.out.printf("[%s] Hero's health: %d hp\n", heroName, heroHp);
-            System.out.printf("[%s] Monsters's health: %d hp\n", monsterName, monsterHp);
+            System.out.printf("[%s] health: %d hp\n", hero, hero.getHp());
+            System.out.printf("[%s] health: %d hp\n", monster, monster.getHp());
         }
 
-        if (heroHp == 0) {
+        if (!hero.isAlive()) {
             IO.println("Hero defeated!");
-        } else if (monsterHp == 0) {
+        } else if (!monster.isAlive()) {
             IO.println("Monster defeated!");
         }
     }
