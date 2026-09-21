@@ -70,7 +70,6 @@ void attack(boolean heroCanAttack) {
 }
 
 void flee() {
-    // What if you could not run away?
     flee = rand.nextBoolean();
     if (flee) {
         IO.println("Ran away safely...");
