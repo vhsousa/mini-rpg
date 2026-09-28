@@ -2,8 +2,10 @@ Random rand = new Random();
 Scanner sc = new Scanner(System.in);
 
 Potion potion = new Potion("Health potion", 10);
-Hero hero = new Hero("Arin", 100, 10, 4, 5, potion);
-Monster monster = new Monster("Goblin", 80, Difficulty.HARD);
+
+Hero hero = new Hero("Arin", 200, 10, 4, 5, potion);
+Monster monster = new Boss("Goblin", 80,  100, Difficulty.HARD);
+
 boolean flee = false;
 
 void menu() {
@@ -15,7 +17,7 @@ void menu() {
 void heroAttack() {
     // Hero's turn
     IO.println("Hero is attacking...");
-    int attack = rand.nextInt(5) + hero.getAttack();
+    int attack = hero.attack();
     monster.sufferDamage(attack);
     IO.println("Hero dealt a " + attack + " attack");
 }
@@ -24,7 +26,7 @@ void monsterAttack() {
     // Monster's turn
     IO.println("Monster is attacking...");
     boolean canDefend = rand.nextBoolean();
-    int attack = rand.nextInt(monster.getAttack());
+    int attack = monster.attack();
     if (canDefend) {
         if (hero.getPp() > 0) {
             // We can defend a partial attack

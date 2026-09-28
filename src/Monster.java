@@ -1,46 +1,24 @@
-public class Monster {
-    private final String name;
-    private int hp;
-    private int attack;
-
+public class Monster extends Character {
     public Monster(String name, int hp, Difficulty difficulty) {
-        this.name = name;
-        this.hp = hp;
-        setAttack(difficulty);
+        super(name, hp, 100);
+        setAttackDamage(getAttackDamage(difficulty));
+    }
+
+    public Monster(String name, int hp, int maxHp, Difficulty difficulty) {
+        super(name, hp, maxHp);
+        setAttackDamage(getAttackDamage(difficulty));
     }
 
     @Override
     public String toString() {
-        return "[Monster] " + this.name;
+        return "[Monster] " + getName();
     }
 
-    public int getHp() {
-        return hp;
-    }
-
-    public void sufferDamage(int damage) {
-        this.hp -= damage;
-    }
-
-    public int getAttack() {
-        return attack;
-    }
-
-    public boolean isAlive() {
-        return hp > 0;
-    }
-
-    private void setAttack(Difficulty difficulty) {
-        switch (difficulty) {
-            case EASY:
-                attack = 3;
-                break;
-            case MEDIUM:
-                attack = 10;
-                break;
-            case HARD:
-                attack = 25;
-                break;
-        }
+    private int getAttackDamage(Difficulty difficulty) {
+        return switch (difficulty) {
+            case EASY -> 3;
+            case MEDIUM -> 10;
+            case HARD -> 25;
+        };
     }
 }
