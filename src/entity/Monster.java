@@ -1,9 +1,9 @@
-public class Monster extends Character {
-    public Monster(String name, int hp, Difficulty difficulty) {
-        super(name, hp, 100);
-        setAttackDamage(getAttackDamage(difficulty));
-    }
+package entity;
 
+import core.Character;
+import core.Difficulty;
+
+public class Monster extends Character {
     public Monster(String name, int hp, int maxHp, Difficulty difficulty) {
         super(name, hp, maxHp);
         setAttackDamage(getAttackDamage(difficulty));

@@ -1,7 +1,9 @@
-public class Character {
+package core;
+
+public abstract class Character {
     private final String name;
     private int hp;
-    private int maxHp;
+    private final int maxHp;
     private int attackDamage;
 
     public Character(String name, int hp, int maxHp, int attackDamage) {
@@ -47,7 +49,7 @@ public class Character {
     }
 
     public int attack() {
-        System.out.println("CHARACTER IS ATTACKING");
+        System.out.println(this + " IS ATTACKING");
         return attackDamage;
     }
 }
