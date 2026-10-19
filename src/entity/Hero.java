@@ -3,27 +3,46 @@ package entity;
 import core.Character;
 import core.Consumable;
 
+import java.util.ArrayList;
+
 public class Hero extends Character {
     private final int defend;
     private int pp;
-    private Consumable consumable;
+    private final ArrayList<Consumable> inventory = new ArrayList<>();
 
-    public Hero(String name, int hp, int attackDamage, int defend, int pp, Consumable consumable) {
+    public Hero(String name, int hp, int attackDamage, int defend, int pp) {
         super(name, hp, 100, attackDamage);
         this.defend = defend;
         this.pp = pp;
-        this.consumable = consumable;
     }
 
-    public void useConsumable() {
-        if (hasConsumable()) {
-            consumable.consume(this);
-            consumable = null;
+    public boolean addConsumable(Consumable consumable) {
+        if (consumable != null) {
+            this.inventory.add(consumable);
+            return true;
+        }
+        return false;
+    }
+
+    public void showInventory() {
+        int i = 0;
+        for (Consumable consumable : this.inventory) {
+            System.out.println(i++ + " " + consumable.toString());
         }
     }
 
-    public boolean hasConsumable() {
-        return consumable != null;
+    public boolean useConsumable(int index) {
+        if (hasConsumables()) {
+            Consumable c = inventory.get(index);
+            c.consume(this);
+            inventory.remove(index);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hasConsumables() {
+        return !inventory.isEmpty();
     }
 
     @Override
@@ -43,7 +62,7 @@ public class Hero extends Character {
         return defend;
     }
 
-    public void setPp(int pp) {
+    public void recoverPp(int pp) {
         this.pp = pp;
     }
 }

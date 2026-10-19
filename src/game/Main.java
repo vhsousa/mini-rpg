@@ -4,13 +4,12 @@ import entity.Boss;
 import entity.Hero;
 import entity.Monster;
 import item.HealthPotion;
+import item.PpPotion;
 
 Random rand = new Random();
 Scanner sc = new Scanner(System.in);
 
-Consumable potion = new HealthPotion (10);
-
-Hero hero = new Hero("Arin", 100, 10, 4, 5, potion);
+Hero hero = new Hero("Arin", 100, 10, 4, 5);
 Monster monster = new Boss("Goblin", 80, 100, Difficulty.HARD);
 
 boolean flee = false;
@@ -47,6 +46,22 @@ void monsterAttack() {
         }
     }
 
+    double probability = 0.40;
+    boolean foundItem = rand.nextDouble() < probability;
+
+    if (foundItem) {
+        boolean foundHealthPotion = hero.addConsumable(new HealthPotion(rand.nextInt(5, 10)));
+        boolean foundPpPotion = hero.addConsumable(new PpPotion(rand.nextInt(1, 2)));
+
+        if (foundHealthPotion) {
+            IO.println(hero + " found a health potion!");
+        }
+
+        if (foundPpPotion) {
+            IO.println(hero + " found a PP potion!");
+        }
+    }
+
     if (attack > 0) {
         hero.sufferDamage(attack);
         IO.println(hero + " suffered a " + attack + " attack");
@@ -78,11 +93,16 @@ void flee() {
 
 void heal() {
     // entity.Hero health +++
-    if (hero.hasConsumable()) {
-        IO.println(hero + " is recovering health...");
-        int previousHealth = hero.getHp();
-        hero.useConsumable();
-        System.out.printf(hero + " recovered %d\n", hero.getHp() - previousHealth);
+    if (hero.hasConsumables()) {
+        hero.showInventory();
+        IO.print("Choose potion: ");
+        int opt = sc.nextInt();
+        IO.println(hero + " is recovering...");
+        boolean usedConsumable = hero.useConsumable(opt);
+
+        if (usedConsumable) {
+            System.out.println(hero + " used a potion\n");
+        }
         attack(false);
     } else {
         IO.println("No potions left!");
